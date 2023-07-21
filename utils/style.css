@@ -15,8 +15,8 @@ html { height:100%; width:100%; }
 
 body {
 
-  align-content:center;
-  align-items:space-around;
+  align-content:space-evenly;
+  /* align-items:space-around; */
   /* background-color:#202830; */
   background-color: var(--background_color);
   display:grid;
@@ -33,7 +33,6 @@ body {
   align-items: top;
   justify-items: center;
   width: 90vw;
-  margin-bottom: 20px;
   /* grey thin solid border on the bottom */
   border-bottom: 1px solid #333333;
 }
