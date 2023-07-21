@@ -1,0 +1,18 @@
+- Correct path to json files in the py notebooks from ./ to json/
+
+- Make a mode for practicing the flags you most often get wrong, at least after having done all flags
+- Save this stuff to the browser locally so you can continue where you left off
+- Make settings screen where you can reset the stats, change the mode, change the metrics
+- Make stats button where you can see your score and the score per flag
+- Make the sliders nice on the similarities page
+
+- All flags mode (what you start with, no repeats but still probability, timed)
+- Endless mode (no timer, with probabilities)
+- 15 flags mode (timed, set difficulty)
+- Training mode (personalized most difficult flags, no timer, no probabilities, only repeats if mistake?, only 15 or endless?)
+
+- Make flag colouring mode
+
+DONE
+- Make it so there's less probability of getting the same flag soon after
+- Make it so your score determines the probability of getting a difficult or easy flag

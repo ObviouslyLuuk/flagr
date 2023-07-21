@@ -1,0 +1,35 @@
+Following is a list of countries. For each of their flags mention what their features represent, focusing on numbers and brevity, like so:
+
+- United States:
+The flag of the United States, commonly known as the American flag or the Stars and Stripes, consists of thirteen horizontal stripes, alternating between red and white. The flag also features a blue rectangle in the top left corner, called the canton, which contains fifty white, five-pointed stars arranged in a pattern known as the "canton of stars".
+
+13 Stripes: These represent the original thirteen colonies that declared independence from Great Britain in 1776. These colonies were: Connecticut, Delaware, Georgia, Maryland, Massachusetts, New Hampshire, New Jersey, New York, North Carolina, Pennsylvania, Rhode Island, South Carolina, and Virginia.
+
+50 Stars: The stars on the flag symbolize the fifty states that currently make up the United States of America, and their equality within the nation.
+
+Colors: The red represents valor and bravery. The white signifies purity, innocence, and the desire for peace. Finally, the blue represents vigilance, perseverance, and justice.
+
+
+- Canada:
+The flag of Canada, commonly known as the Maple Leaf flag, consists of a red field with a white square in the center. Inside the white square, there is a red, stylized, eleven-pointed maple leaf.
+
+Maple Leaf: This is a prominent symbol of Canada. It represents the natural beauty of the country and is associated with unity, tolerance, and peace. The eleven points on the leaf have no specific symbolism.
+
+Colors: The red represents courage, vitality, and the sacrifice of those who have fought for Canada. The white symbolizes peace, honesty, and purity.
+
+
+- Angola:
+The flag of Angola consists of two horizontal stripes of red and black, with a yellow machete, gear and star emblem in the center.
+
+The Machete: represents agricultural workers
+
+The Gear: symbolizes industrial workers
+
+The Star: represents internationalism and progress
+
+Colors: The red symbolizes the bloodshed and sacrifice of Angolan martyrs in their struggle for independence. The black represents the continent of Africa.
+
+
+- The Netherlands
+- France
+- Bhutan

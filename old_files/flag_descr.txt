@@ -1,0 +1,43 @@
+Following is a list of countries. For each of their flags mention what their features represent, focusing on numbers and brevity, like so:
+
+- United States:
+The flag of the United States, commonly known as the American flag or the Stars and Stripes, consists of thirteen horizontal stripes, alternating between red and white. The flag also features a blue rectangle in the top left corner, called the canton, which contains fifty white, five-pointed stars arranged in a pattern known as the "canton of stars".
+
+13 Stripes: These represent the original thirteen colonies that declared independence from Great Britain in 1776. These colonies were: Connecticut, Delaware, Georgia, Maryland, Massachusetts, New Hampshire, New Jersey, New York, North Carolina, Pennsylvania, Rhode Island, South Carolina, and Virginia.
+
+50 Stars: The stars on the flag symbolize the fifty states that currently make up the United States of America.
+
+
+- Canada:
+The flag of Canada, commonly known as the Maple Leaf flag, consists of a red field with a white square in the center. Inside the white square, there is a red, stylized, eleven-pointed maple leaf.
+
+Maple Leaf: This is a prominent symbol of Canada. The eleven points on the leaf have no specific symbolism.
+
+
+- Angola:
+The flag of Angola consists of two horizontal stripes of red and black, with a yellow machete, gear and star emblem in the center.
+
+The Machete: represents agricultural workers
+
+The Gear: symbolizes industrial workers
+
+The Star: represents internationalism and progress
+
+
+- The Netherlands
+The flag of the Netherlands, commonly referred to as the Dutch flag, consists of three horizontal stripes of equal width, with the top stripe being red, the middle stripe white, and the bottom stripe blue.
+
+
+- France
+The flag of France, commonly known as the French tricolor, consists of three vertical stripes of equal width, with the left stripe being blue, the middle stripe white, and the right stripe red.
+
+
+- Bhutan
+The flag of Bhutan features a diagonally divided rectangle with a yellow upper half and an orange lower half. In the center, there is a large white dragon, known as the Druk.
+
+Dragon: The dragon represents the Thunder Dragon of Bhutanese mythology and is associated with the country's name, "Druk Yul" (Land of the Thunder Dragon).
+
+
+- Kenya
+- Central African Republic
+- The Maldives
