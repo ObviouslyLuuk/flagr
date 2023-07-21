@@ -67,6 +67,38 @@ function multinomial_sample(array, probs, seed=null) {
         }
     }
 }
+function sample_from_normal_distribution(mean, std) {
+    let u1 = Math.random()
+    let u2 = Math.random()
+    let z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
+    return z0 * std + mean
+}
+// function sample_normal_n(n, mean, std) {
+//     let samples = []
+//     for (let i = 0; i < n; i++) {
+//         samples.push(sample_from_normal_distribution(mean, std))
+//     }
+//     return samples
+// }
+
+/** Get probability for sampling a number inside a bin in the normal distribution */
+function gaussian(x, mean, std) {
+    let variance = std ** 2;
+    let numerator = Math.exp(-((x - mean) ** 2) / (2 * variance));
+    let denominator = Math.sqrt(2 * Math.PI * variance);
+    return numerator / denominator;
+}
+// function generate_normal_distribution(mean, std, n) {
+//     let samples = []
+//     let x = mean - 3 * std
+//     let step = 1
+//     for (let i = 0; i < n; i++) {
+//         let p = gaussian(x, mean, std)
+//         samples.push([x, p])
+//         x += step
+//     }
+//     return samples
+// }
 
 function capitalize(str) {
     return str.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join(" ")
@@ -197,7 +229,7 @@ function init_flag_game() {
             already_guessed = true
 
             if (outcome == true) {
-                recently_correct.push(img.dataset.code)
+                recently_correct.unshift(img.dataset.code)
 
                 // Add button to go to next question
                 overlay_next_button(img)
@@ -248,20 +280,31 @@ function add_to_recent_outcomes(outcome) {
 
 /** Function for getting new "question" flag based on different probabilities */
 function get_new_flag() {
-    let success_weight = mean(recent_outcomes.slice(0, 10))
+    let success_rate = mean(recent_outcomes.slice(0, 10))
     // If no outcomes yet, set to 0
     if (recent_outcomes.length < 5)
-        success_weight = 0
-    console.log("\nsuccess weight: ", success_weight)
+        success_rate = 0
+    console.log("\nrecent success rate: ", success_rate)
+
+    let difficulty = success_to_difficulty(success_rate)
+    difficulty = difficulty*0.8 + 0.05
+    console.log("difficulty: ", difficulty)
+
+    let gaussian_mean = Math.round((difficulty) * country_codes.length)
+    console.log("gaussian_mean: ", gaussian_mean)
 
     // Assign probabilities to each flag
     let probabilities = []
     for (let i = 0; i < country_codes.length; i++) {
         let code = country_codes[i]
 
-        // let weighted_gdp_prob = (success_weight/2 - 0.01) * (1-gdp_probs[code]) + (1 - success_weight/2 + 0.01) * gdp_probs[code]
-        let weighted_gdp_prob = (success_weight/1.5) * (1-gdp_probs[code]) + (1 - success_weight/1.5) * gdp_probs[code]
-        let prob = get_recency_probability(code) * weighted_gdp_prob
+        // Get rank of country in gdp_probs
+        let rank = country_codes.map(c => gdp_probs[c]).sort((a, b) => b - a).indexOf(gdp_probs[code])
+
+        // Get corresponding probability for rank from gaussian
+        let gdp_prob = gaussian(rank, gaussian_mean, 10)
+
+        let prob = get_recency_probability(code) * gdp_prob
 
         probabilities.push(prob)
     }
@@ -269,13 +312,9 @@ function get_new_flag() {
     probabilities = normalise(probabilities)
 
     // Sample from the distribution
-    // let code = multinomial_sample(country_codes, probabilities)
+    let code = multinomial_sample(country_codes, probabilities)
     // Greedy
     // let code = country_codes[probabilities.indexOf(Math.max(...probabilities))]
-    // Get indices of top 10 probabilities
-    let top10 = probabilities.map((p, i) => [p, i]).sort((a, b) => b[0] - a[0]).slice(0, 5).map(p => p[1])
-    // Randomly sample from top 10
-    let code = country_codes[top10[Math.floor(Math.random() * top10.length)]]
 
     // Print info
     console.log(code2country[code])
@@ -285,6 +324,10 @@ function get_new_flag() {
     console.log("Final probability rank: ", probabilities.indexOf(probabilities.find(p => p == final_prob)))
 
     return code
+}
+
+function success_to_difficulty(success_rate) {
+    return 1 - (1-success_rate)**0.2
 }
 
 /** Probability penalty based on recency */
