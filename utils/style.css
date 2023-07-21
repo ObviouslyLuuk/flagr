@@ -27,8 +27,20 @@ body {
 }
 
 /* UI */
+#page_banner_div {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: top;
+  justify-items: center;
+  width: 90vw;
+  margin-bottom: 20px;
+  /* grey thin solid border on the bottom */
+  border-bottom: 1px solid #333333;
+}
+
 #question_div {
-  /* padding: 20px; */
+  /* Make bold */
+  font-weight: bold;
 }
 
 /* FLAG GRID */
@@ -220,6 +232,7 @@ body {
   border-radius: 20px;
   /* justify-content: center; */
   align-self: center;
+  z-index: 100;
 }
 
 .overlay-content {

@@ -44,20 +44,6 @@ grid_configs = {
 }
 
 
-function create_and_append(type, parent=null, id=null, class_=null) {
-    if (parent == null)
-        parent = document.body
-
-    let element = document.createElement(type)
-
-    if (id != null)
-        element.id = id
-    if (class_ != null)
-        element.setAttribute('class', class_)
-
-    parent.appendChild(element)
-    return element
-}
 
 function sum(arr) {
     return arr.reduce((a, b) => a + b, 0)
@@ -69,7 +55,6 @@ function normalise(arr) {
     let total = sum(arr)
     return arr.map(x => x / total)
 }
-
 function multinomial_sample(array, probs, seed=null) {
     let rand = Math.random()
     if (seed) {rand = random(seed)}
@@ -159,7 +144,7 @@ function init_flag_game() {
     top_div.style["align-items"] = "center"
     top_div.style["justify-items"] = "center"
     top_div.style.gridTemplateColumns = "1fr 1fr 1fr"
-    top_div.style.width = "100%"
+    top_div.style.width = "90vw"
 
     // Display SCORE and score percentage
     let score_div = create_and_append("h2", top_div, "score_div")
@@ -247,16 +232,6 @@ function init_flag_game() {
     shuffle_elements(div)
 }
 
-/** Add animation that makes the image smaller and then bigger again */
-function add_pop_animation(elem) {
-    elem.style.animation = "pop 0.5s"
-    elem.style.animationFillMode = "forwards"
-    // Remove animation after 0.5s
-    setTimeout(function() {
-        elem.style.animation = ""
-    }, 500)
-}
-
 function add_to_recent_flags(code) {
     recent_flags.unshift(code)
     if (recent_flags.length > 20)
@@ -290,9 +265,9 @@ function get_new_flag() {
     probabilities = normalise(probabilities)
 
     // Sample from the distribution
-    // let code = multinomial_sample(country_codes, probabilities)
+    let code = multinomial_sample(country_codes, probabilities)
     // Greedy
-    let code = country_codes[probabilities.indexOf(Math.max(...probabilities))]
+    // let code = country_codes[probabilities.indexOf(Math.max(...probabilities))]
 
     // Print info
     console.log(code2country[code])
@@ -414,10 +389,4 @@ function add_image_grid(parent, count, id="flag_grid") {
         create_and_append("img", img_container, null, "flag")
     }
     return div
-}
-
-function shuffle_elements(parent) {
-    for (let i = parent.children.length; i >= 0; i--) {
-        parent.appendChild(parent.children[Math.random() * i | 0]);
-    }
 }
