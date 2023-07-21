@@ -28,6 +28,7 @@ var country_codes = []
 var countries = []
 
 var recent_flags = []
+var recently_correct = []
 var recent_outcomes = []
 
 
@@ -196,6 +197,8 @@ function init_flag_game() {
             already_guessed = true
 
             if (outcome == true) {
+                recently_correct.push(img.dataset.code)
+
                 // Add button to go to next question
                 overlay_next_button(img)
 
@@ -247,7 +250,7 @@ function add_to_recent_outcomes(outcome) {
 function get_new_flag() {
     let success_weight = mean(recent_outcomes.slice(0, 10))
     // If no outcomes yet, set to 0
-    if (recent_outcomes.length < 10)
+    if (recent_outcomes.length < 5)
         success_weight = 0
     console.log("\nsuccess weight: ", success_weight)
 
@@ -256,7 +259,8 @@ function get_new_flag() {
     for (let i = 0; i < country_codes.length; i++) {
         let code = country_codes[i]
 
-        let weighted_gdp_prob = success_weight * (1-gdp_probs[code]) + (1 - success_weight) * gdp_probs[code]
+        // let weighted_gdp_prob = (success_weight/2 - 0.01) * (1-gdp_probs[code]) + (1 - success_weight/2 + 0.01) * gdp_probs[code]
+        let weighted_gdp_prob = (success_weight/1.5) * (1-gdp_probs[code]) + (1 - success_weight/1.5) * gdp_probs[code]
         let prob = get_recency_probability(code) * weighted_gdp_prob
 
         probabilities.push(prob)
@@ -265,9 +269,13 @@ function get_new_flag() {
     probabilities = normalise(probabilities)
 
     // Sample from the distribution
-    let code = multinomial_sample(country_codes, probabilities)
+    // let code = multinomial_sample(country_codes, probabilities)
     // Greedy
     // let code = country_codes[probabilities.indexOf(Math.max(...probabilities))]
+    // Get indices of top 10 probabilities
+    let top10 = probabilities.map((p, i) => [p, i]).sort((a, b) => b[0] - a[0]).slice(0, 5).map(p => p[1])
+    // Randomly sample from top 10
+    let code = country_codes[top10[Math.floor(Math.random() * top10.length)]]
 
     // Print info
     console.log(code2country[code])
@@ -281,13 +289,19 @@ function get_new_flag() {
 
 /** Probability penalty based on recency */
 function get_recency_probability(code) {
-    let idx = recent_flags.indexOf(code)
+    let idx = recently_correct.indexOf(code)
 
-    // If not in recent_flags, return 1
-    if (idx == -1)
-        return 1
+    // If not in recently_correct
+    if (idx == -1) {
+        idx = recent_flags.indexOf(code)
+        if (idx == -1)
+            return 1
 
-    unbounded = (idx/20)**4
+        let unbounded = (idx/3)**2 // recover after 3 questions
+        return Math.min(unbounded, 1)
+    }
+
+    unbounded = (idx/200)**2 // recover after 200 questions
     return Math.min(unbounded, 1)
 }
 
