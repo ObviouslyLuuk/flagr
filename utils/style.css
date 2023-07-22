@@ -47,6 +47,7 @@ body {
 #question_div {
   /* Make bold */
   font-weight: bold;
+  font-size: 2em;
 }
 
 /* FLAG GRID */

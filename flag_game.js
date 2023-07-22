@@ -183,11 +183,12 @@ function init_flag_game() {
     top_div.style.gridTemplateColumns = "1fr 1fr 1fr"
     top_div.style.width = "90vw"
     top_div.style["text-align"] = "center"
+    top_div.style["min-height"] = "9em"
 
     // Display SCORE and score percentage
     let score_div = create_and_append("h2", top_div, "score_div")
     update_score()
-    let question_div = create_and_append("h1", top_div, "question_div")
+    let question_div = create_and_append("div", top_div, "question_div")
     let timer_div = create_and_append("h2", top_div, "timer_div")
 
     // Select country
