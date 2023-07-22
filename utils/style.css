@@ -250,7 +250,7 @@ body {
   display: grid;
   justify-items: center;
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: 85vh;
 }
 
 #settings_overlay {

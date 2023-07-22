@@ -99,7 +99,10 @@ fetch('json/code2country.json')
         code2country = data
         country_codes = Object.keys(code2country)
         countries = Object.values(code2country)
-        init_flag_game()
+        init_flag_game(true)
+
+        // Set all flags button to N flags
+        document.getElementById("all_flags_mode_btn").innerHTML = country_codes.length + " Flags"
     })
     // .catch(function (err) {
     //     console.log('error: ' + err);
@@ -110,7 +113,7 @@ fetch('json/GDP_probabilities.json')
     })
     .then(function (data) {
         gdp_probs = data
-        init_flag_game()
+        init_flag_game(true)
     })
 fetch('json/color_dist_matrix.json')
     .then(function (response) {
@@ -118,7 +121,7 @@ fetch('json/color_dist_matrix.json')
     })
     .then(function (data) {
         flag_color_dist = data
-        init_flag_game()
+        init_flag_game(true)
     })
 fetch('json/flag_mse_matrix.json')
     .then(function (response) {
@@ -126,7 +129,7 @@ fetch('json/flag_mse_matrix.json')
     })
     .then(function (data) {
         flag_mse = data
-        init_flag_game()
+        init_flag_game(true)
     })
 fetch('json/flag_mse_matrix_flips.json')
     .then(function (response) {
@@ -134,7 +137,7 @@ fetch('json/flag_mse_matrix_flips.json')
     })
     .then(function (data) {
         flag_mse_flips = data
-        init_flag_game()
+        init_flag_game(true)
     })
 fetch('json/flag_mse_matrix_rotations.json')
     .then(function (response) {
@@ -142,7 +145,7 @@ fetch('json/flag_mse_matrix_rotations.json')
     })
     .then(function (data) {
         flag_mse_rotations = data
-        init_flag_game()
+        init_flag_game(true)
     })
 fetch('json/flag_edges_mse_matrix.json')
     .then(function (response) {
@@ -150,9 +153,36 @@ fetch('json/flag_edges_mse_matrix.json')
     })
     .then(function (data) {
         flag_edges_mse = data
-        init_flag_game()
+        init_flag_game(true)
     })
 
+
+function init_stats() {
+    if (localStorage.getItem("flagr_stats") == null) {
+
+        let flag_stats = {}
+        for (let code of country_codes) {
+            flag_stats[code] = {
+                correct: 0,
+                total: 0,
+            }
+        }
+        let stats = {
+            flag_stats: flag_stats,
+            times: {
+                197: [],
+                15: [],
+            },
+        }
+        localStorage.setItem("flagr_stats", JSON.stringify(stats))
+    }
+}
+function get_stats() {
+    return JSON.parse(localStorage.getItem("flagr_stats"))
+}
+function save_stats(stats) {
+    localStorage.setItem("flagr_stats", JSON.stringify(stats))
+}
 
 function init_flag_game(reset=false) {
     if (code2country == null || flag_color_dist == null || flag_mse == null || flag_mse_flips == null || flag_mse_rotations == null || flag_edges_mse == null || gdp_probs == null)
@@ -170,6 +200,9 @@ function init_flag_game(reset=false) {
         recent_flags = []
         recently_correct = []
         recent_outcomes = []
+
+        // If it doesn't exist, initialize the stats variable in local storage
+        init_stats()
     }
 
     let top_div = create_and_append("div", document.body, "top_div")
@@ -361,11 +394,20 @@ function show_end_screen_overlay() {
     end_screen_title.innerHTML = "Well done!"
 
     let end_screen_text = create_and_append("p", end_screen_div, "end_screen_text")
+    let time = (Date.now() - start_time) / 1000
+
     end_screen_text.innerHTML = `
     Score: ${get_score_str()} <br>
-    Time: ${((Date.now() - start_time) / 1000).toFixed(2)}s <br>
-    Time per flag: ${((Date.now() - start_time) / 1000 / max_flags).toFixed(2)}s <br>
+    Time: ${time.toFixed(2)}s <br>
+    Time per flag: ${(time / max_flags).toFixed(2)}s <br>
     `
+    let stats = get_stats()
+    stats["times"][max_flags].unshift({
+        date: new Date(),
+        score: sum(recent_outcomes),
+        time: time,
+    })
+    save_stats(stats)
 }
 
 function get_weights() {
@@ -519,6 +561,11 @@ function check_answer(img) {
     let outcome = (img.dataset.code == correct_code)
     if (!already_guessed) {
         add_to_recent_outcomes(outcome)
+
+        let stats = get_stats()
+        stats["flag_stats"][img.dataset.code]["total"] += 1
+        stats["flag_stats"][img.dataset.code]["correct"] += outcome
+        save_stats(stats)
     }
     return outcome
 }

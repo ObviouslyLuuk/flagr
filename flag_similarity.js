@@ -36,7 +36,7 @@ function init_flag_similarity(parent=document.getElementById("settings_overlay_c
     let sim_lists_div = create_and_append("div", similarity_div, "sim_lists_div")
     // Make elements of sim_lists_div display inline
     sim_lists_div.style.display = "flex"
-    sim_lists_div.style["max-height"] = "50vh"
+    sim_lists_div.style["max-height"] = "45vh"
     sim_lists_div.style["overflow-y"] = "scroll"
 
     // Add n sim_list_grids to sim_lists_div
