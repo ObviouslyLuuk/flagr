@@ -3,6 +3,10 @@ IMG_EXT = ".png"
 DATA_DIR = "images/svg/"
 IMG_EXT = ".svg"
 
+function get_flag_src(code) {
+    return DATA_DIR + code + IMG_EXT
+}
+
 DEFAULT_GAME_MODE = "endless" // "endless" or "all_flags" or "fifteen" or "training"
 FLAG_COUNT = 9
 var correct_code = null
@@ -408,6 +412,8 @@ function show_end_screen_overlay() {
         time: time,
     })
     save_stats(stats)
+
+    update_stats_overlay()
 }
 
 function get_weights() {

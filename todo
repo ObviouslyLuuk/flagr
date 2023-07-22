@@ -1,8 +1,7 @@
 - Correct path to json files in the py notebooks from ./ to json/
 
 - Make a mode for practicing the flags you most often get wrong, at least after having done all flags
-- Save this stuff to the browser locally so you can continue where you left off
-- Make stats button where you can see your score and the score per flag, where you can reset the stats
+- button for resetting the stats
 
 - 15 flags mode (timed, set difficulty)
 - Training mode (personalized most difficult flags, no timer, no probabilities, only repeats if mistake?, only 15 or endless?)
