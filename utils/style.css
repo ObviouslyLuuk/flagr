@@ -124,6 +124,10 @@ body {
   right: 3px;
   top: 0px;
 }
+.icon_btn:hover {
+  /* Make it darker */
+  filter: brightness(0.5);
+}
 
 #play_again_btn {
   background-color: var(--correct_color);

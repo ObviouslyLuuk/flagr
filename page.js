@@ -8,11 +8,11 @@ const BARCHART_ICON = `
 
 
 function init_banner() {
-    let stats_btn = create_and_append('div', document.getElementById("page_banner_left"), 'stats_btn', 'butn')
+    let stats_btn = create_and_append('div', document.getElementById("page_banner_left"), 'stats_btn', 'butn icon_btn')
     stats_btn.innerHTML = BARCHART_ICON
     stats_btn.setAttribute('onclick', 'set_visibility("win_overlay", true)')      
 
-    let settings_btn = create_and_append('div', document.getElementById("page_banner_right"), 'settings_btn', 'butn')
+    let settings_btn = create_and_append('div', document.getElementById("page_banner_right"), 'settings_btn', 'butn icon_btn')
     create_and_append("span", settings_btn, null, "glyphicon glyphicon-cog")
     settings_btn.setAttribute('onclick', 'set_visibility("settings_overlay", true)')
 

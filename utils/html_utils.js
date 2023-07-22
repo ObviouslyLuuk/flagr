@@ -16,7 +16,7 @@ function create_and_append(type, parent=null, id=null, class_=null) {
 
 /** Adds button on top of element that makes it invisible */
 function add_close_button(element_id) {
-    let close_settings_btn = create_and_append('div', document.getElementById(element_id), element_id+'_close_btn', 'butn close_btn')
+    let close_settings_btn = create_and_append('div', document.getElementById(element_id), element_id+'_close_btn', 'butn close_btn icon_btn')
     create_and_append("span", close_settings_btn, null, "glyphicon glyphicon-remove")        
     close_settings_btn.setAttribute('onclick', `set_visibility("${element_id}", false)`)
 }
