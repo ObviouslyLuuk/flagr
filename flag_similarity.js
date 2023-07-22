@@ -6,21 +6,25 @@ function remove_element(e) {
 }
 
 function init_flag_similarity() {
-    remove_element(document.getElementById("question_div"))
+    remove_element(document.getElementById("top_div"))
     remove_element(document.getElementById("flag_grid"))
 
     document.body.style.height = "auto"
 
     let sliders_div = create_and_append("div", document.body, "sim_sliders_div")
+    sliders_div.style.display = "flex"
 
     // Add slider for each metric in METRICS
     for (let i in METRICS) {
+        // Add div for slider and label
+        let slider_div = create_and_append("div", sliders_div, METRICS[i]+"_slider_div", "slider_div")
+
         // Add label for slider
-        let label = create_and_append("label", sliders_div, METRICS[i]+"_label")
+        let label = create_and_append("label", slider_div, METRICS[i]+"_label")
         label.innerHTML = METRIC_NAMES[i]
 
         // Add slider
-        let slider = create_and_append("input", sliders_div, METRICS[i]+"_slider")
+        let slider = create_and_append("input", slider_div, METRICS[i]+"_slider")
         slider.type = "range"
         slider.value = DEFAULT_WEIGHTS[i]
         slider.oninput = sort_sim_lists
@@ -33,7 +37,8 @@ function init_flag_similarity() {
     // Add n sim_list_grids to sim_lists_div
     for (let i = 0; i < NUM_LISTS; i++) {
         let sim_list_grid = create_and_append("div", sim_lists_div, "sim_grid_"+i, "image_grid")
-        sim_list_grid.dataset.idx = Math.floor(Math.random() * country_codes.length)
+        // sim_list_grid.dataset.idx = Math.floor(Math.random() * country_codes.length)
+        sim_list_grid.dataset.idx = countries.indexOf(EXAMPLE_COUNTRIES[i])
         sim_list_grid.style["max-width"] = "10vw"
 
         // Add countries.length img elements to sim_list_div

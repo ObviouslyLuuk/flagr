@@ -3,6 +3,7 @@ IMG_EXT = ".png"
 DATA_DIR = "images/svg/"
 IMG_EXT = ".svg"
 
+GAME_MODE = "Endless" // "Endless" or "All" or "15" or "Training"
 FLAG_COUNT = 9
 var correct_code = null
 var already_guessed = false
@@ -17,12 +18,15 @@ var flag_mse_rotations = null
 var flag_edges_mse = null
 METRICS = ["color", "mse", "mse_flips", "mse_rotations", "edges_mse"]
 METRIC_NAMES = ["Color Palette", "Per Pixel", "Flips", "Rotations", "Edges"]
-COLOR_WEIGHTS = [100, 2, 2, 0, 10] // Emphasis on color (nice for aesthetics)
-BALANCED_WEIGHTS = [100, 8, 34, 0, 13] // Seems to be well balanced
 
-DEFAULT_WEIGHTS = BALANCED_WEIGHTS
+WEIGHT_PRESETS = {
+    "Balanced": [100, 8, 34, 0, 13], // Seems to be well balanced
+    "Color Emphasis": [100, 2, 2, 0, 10], // Emphasis on color (nice for aesthetics)
+}
 
-EXAMPLE_COUNTRIES = ["greece", "bahamas", "ireland", "japan", "denmark"] // Nice examples to show the different metrics
+DEFAULT_WEIGHTS = WEIGHT_PRESETS["Balanced"]
+
+EXAMPLE_COUNTRIES = ["Greece", "Bahamas", "Ireland", "Japan", "Denmark"] // Nice examples to show the different metrics
 
 var country_codes = []
 var countries = []
@@ -178,6 +182,7 @@ function init_flag_game() {
     top_div.style["justify-items"] = "center"
     top_div.style.gridTemplateColumns = "1fr 1fr 1fr"
     top_div.style.width = "90vw"
+    top_div.style["text-align"] = "center"
 
     // Display SCORE and score percentage
     let score_div = create_and_append("h2", top_div, "score_div")

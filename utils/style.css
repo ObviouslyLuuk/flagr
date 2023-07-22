@@ -326,6 +326,11 @@ input, select {
   align-items: center;
 }
 
+.slider_div {
+  display: grid;
+  place-items: center;
+}
+
 .btn {
   font-size: inherit;
   color: white;
