@@ -3,7 +3,7 @@ IMG_EXT = ".png"
 DATA_DIR = "images/svg/"
 IMG_EXT = ".svg"
 
-GAME_MODE = "Endless" // "Endless" or "All" or "15" or "Training"
+DEFAULT_GAME_MODE = "endless" // "endless" or "all_flags" or "fifteen" or "training"
 FLAG_COUNT = 9
 var correct_code = null
 var already_guessed = false
@@ -35,6 +35,8 @@ var recent_flags = []
 var recently_correct = []
 var recent_outcomes = []
 
+var max_flags, timed, get_flag_fn, start_time, timer
+var game_mode = DEFAULT_GAME_MODE
 
 grid_configs = {
     1: "1x1",
@@ -77,14 +79,6 @@ function sample_from_normal_distribution(mean, std) {
     let z0 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2)
     return z0 * std + mean
 }
-// function sample_normal_n(n, mean, std) {
-//     let samples = []
-//     for (let i = 0; i < n; i++) {
-//         samples.push(sample_from_normal_distribution(mean, std))
-//     }
-//     return samples
-// }
-
 /** Get probability for sampling a number inside a bin in the normal distribution */
 function gaussian(x, mean, std) {
     let variance = std ** 2;
@@ -92,18 +86,6 @@ function gaussian(x, mean, std) {
     let denominator = Math.sqrt(2 * Math.PI * variance);
     return numerator / denominator;
 }
-// function generate_normal_distribution(mean, std, n) {
-//     let samples = []
-//     let x = mean - 3 * std
-//     let step = 1
-//     for (let i = 0; i < n; i++) {
-//         let p = gaussian(x, mean, std)
-//         samples.push([x, p])
-//         x += step
-//     }
-//     return samples
-// }
-
 function capitalize(str) {
     return str.split(" ").map(word => word[0].toUpperCase() + word.slice(1)).join(" ")
 }
@@ -172,9 +154,23 @@ fetch('json/flag_edges_mse_matrix.json')
     })
 
 
-function init_flag_game() {
+function init_flag_game(reset=false) {
     if (code2country == null || flag_color_dist == null || flag_mse == null || flag_mse_flips == null || flag_mse_rotations == null || flag_edges_mse == null || gdp_probs == null)
         return
+
+    if (document.getElementById("flag_grid"))
+        document.getElementById("flag_grid").remove()
+    if (document.getElementById("top_div"))
+        document.getElementById("top_div").remove()
+    if (reset) {
+        if (timer)
+            clearInterval(timer)
+
+        // Reset score
+        recent_flags = []
+        recently_correct = []
+        recent_outcomes = []
+    }
 
     let top_div = create_and_append("div", document.body, "top_div")
     top_div.style.display = "grid"
@@ -185,15 +181,41 @@ function init_flag_game() {
     top_div.style["text-align"] = "center"
     top_div.style["min-height"] = "9em"
 
+    // Gamemode config
+    switch (game_mode) {
+        case "endless":
+            max_flags = Infinity
+            timed = false
+            get_flag_fn = get_new_flag 
+            break;
+        case "all_flags":
+            max_flags = country_codes.length
+            timed = true
+            get_flag_fn = get_new_flag_no_repeat
+            break;
+        case "fifteen":
+            max_flags = 15
+            timed = true
+            break;
+        case "training":
+            max_flags = 15
+            timed = false
+            break;
+    }
+
     // Display SCORE and score percentage
     let score_div = create_and_append("h2", top_div, "score_div")
     update_score()
     let question_div = create_and_append("div", top_div, "question_div")
     let timer_div = create_and_append("h2", top_div, "timer_div")
+    if (timed && reset) {
+        start_time = Date.now()
+        timer = start_timer()
+    }
 
     // Select country
     already_guessed = false
-    correct_code = get_new_flag()
+    correct_code = get_flag_fn()
     let idx = country_codes.indexOf(correct_code)
     add_to_recent_flags(correct_code)
     let country = code2country[correct_code]
@@ -230,6 +252,8 @@ function init_flag_game() {
                 return
 
             let outcome = check_answer(img)
+            update_score()
+            if (check_if_over()) return
 
             img.dataset.guessed = "true"
             already_guessed = true
@@ -237,22 +261,20 @@ function init_flag_game() {
             if (outcome == true) {
                 recently_correct.unshift(img.dataset.code)
 
-                // Add button to go to next question
-                overlay_next_button(img)
+                if (["all_flags", "fifteen"].includes(game_mode)) {
+                    init_flag_game()
+                }
+                else {
+                    // Add button to go to next question
+                    overlay_next_button(img)
 
-                // Overlay country name on each image that wasn't guessed
-                let imgs = document.getElementById("flag_grid").getElementsByTagName("img")
-                for (let im of imgs) {
-                    if (im.dataset.guessed == "true") continue
-
-                    im.dataset.guessed = "true"
-                    overlay_country_name(im)
+                    // Overlay country name on each image that wasn't guessed
+                    disable_all_flags()
                 }
             } else {
                 overlay_country_name(img)
             }
             add_pop_animation(img)
-            update_score()
         }
         // Set cursor to pointer
         img.style.cursor = "pointer"
@@ -273,6 +295,77 @@ function init_flag_game() {
     shuffle_elements(div)
 }
 
+/** Overlay country name on each image that wasn't guessed and disable clicking */
+function disable_all_flags() {
+    let imgs = document.getElementById("flag_grid").getElementsByTagName("img")
+    for (let im of imgs) {
+        if (im.dataset.guessed == "true") continue
+
+        im.dataset.guessed = "true"
+        overlay_country_name(im)
+    }
+}
+
+function set_gamemode(gamemode) {
+    game_mode = gamemode
+    init_flag_game(reset=true)
+
+    enable_buttons("gamemodes_buttons_div")
+
+    // Disable button that was just clicked if gamemode is endless or training
+    if (gamemode == "endless" || gamemode == "training") {
+        let button = document.getElementById(gamemode + "_mode_btn")
+        button.disabled = true
+
+        // Add disabled class to button
+        button.classList.add("disabled")
+    }
+}
+
+function start_timer() {
+    let timer = setInterval(function() {
+        update_timer()
+    }, 100); // check every .1 seconds
+    return timer
+}
+
+function update_timer() {
+    let timer_div = document.getElementById("timer_div")
+    // Round to 1 decimal place
+    let time = (Date.now() - start_time) / 1000
+    timer_div.innerHTML = time.toFixed(1) + "s"
+}
+
+function check_if_over() {
+    if (recent_outcomes.length >= max_flags) {
+        // Stop timer
+        clearInterval(timer)
+
+        disable_all_flags()
+
+        show_end_screen_overlay()
+
+        return true
+    }
+    return false
+}
+
+function show_end_screen_overlay() {
+    let overlay = create_and_append("div", document.body, "end_screen_overlay", "overlay")
+    overlay.style.display = "block"
+    add_close_button("end_screen_overlay")
+
+    let end_screen_div = create_and_append("div", overlay, "end_screen_div")
+    let end_screen_title = create_and_append("h1", end_screen_div, "end_screen_title")
+    end_screen_title.innerHTML = "Well done!"
+
+    let end_screen_text = create_and_append("p", end_screen_div, "end_screen_text")
+    end_screen_text.innerHTML = `
+    Score: ${get_score_str()} <br>
+    Time: ${((Date.now() - start_time) / 1000).toFixed(2)}s <br>
+    `
+}
+
 function get_weights() {
     // If not init yet, return default weights
     if (document.getElementById("similarity_div") == null)
@@ -286,15 +379,6 @@ function get_weights() {
     return weights
 }
 
-/** Make all buttons in the preset group enabled */
-function enable_preset_buttons() {
-    let preset_buttons = document.getElementById("metrics_buttons_div").getElementsByTagName("button")
-    for (let button of preset_buttons) {
-        // Remove disabled from class list
-        button.classList.remove("disabled")
-    }
-}
-
 function set_metric_preset(preset) {
     if (document.getElementById("similarity_div") == null)
         init_flag_similarity()
@@ -303,7 +387,7 @@ function set_metric_preset(preset) {
         let slider = document.getElementById(METRICS[i]+"_slider")
         slider.value = WEIGHT_PRESETS[preset][i]
     }
-    enable_preset_buttons()
+    enable_buttons("metrics_buttons_div")
     // Disable the button that was clicked
     let button = document.getElementById("metric_"+preset+"_btn")
     button.classList.add("disabled")
@@ -311,13 +395,19 @@ function set_metric_preset(preset) {
 
 function add_to_recent_flags(code) {
     recent_flags.unshift(code)
-    if (recent_flags.length > 20)
+    if (recent_flags.length > country_codes.length)
         recent_flags.pop()
 }
 function add_to_recent_outcomes(outcome) {
     recent_outcomes.unshift(outcome)
     // if (recent_outcomes.length > 20)
     //     recent_outcomes.pop()
+}
+
+function get_new_flag_no_repeat() {
+    let possible_flags = country_codes.filter(code => !recent_flags.includes(code))
+    let idx = Math.floor(Math.random() * possible_flags.length)
+    return possible_flags[idx]
 }
 
 /** Function for getting new "question" flag based on different probabilities */
@@ -407,18 +497,20 @@ function overlay_next_button(img) {
     let restart_button = create_and_append("button", overlay, "restart_button", "btn btn-secondary")
     restart_button.innerHTML = "Next"
     restart_button.onclick = function() {
-        document.getElementById("flag_grid").remove()
-        document.getElementById("top_div").remove()
         init_flag_game()
     }
 }
 
 function update_score() {
-    score_div.innerHTML = "Score: " + sum(recent_outcomes) + " / " + recent_outcomes.length
+    score_div.innerHTML = "Score: " + get_score_str()
+}
+function get_score_str() {
+    let str = sum(recent_outcomes) + " / " + recent_outcomes.length
 
     if (recent_outcomes.length > 0) {
-        score_div.innerHTML += " (" + Math.round(mean(recent_outcomes) * 100) + "%)"
+        str += " (" + Math.round(mean(recent_outcomes) * 100) + "%)"
     }
+    return str
 }
 
 function check_answer(img) {

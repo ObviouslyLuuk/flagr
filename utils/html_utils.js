@@ -21,6 +21,16 @@ function add_close_button(element_id) {
     close_settings_btn.setAttribute('onclick', `set_visibility("${element_id}", false)`)
 }
 
+/** Make all buttons in the container group enabled */
+function enable_buttons(container_id) {
+    let preset_buttons = document.getElementById(container_id).getElementsByTagName("button")
+    for (let button of preset_buttons) {
+        button.disabled = false
+        // Remove disabled from class list
+        button.classList.remove("disabled")
+    }
+}
+
 /** Creates switch input in parent. Relies on Bootstrap */
 function create_switch(parent, label_text, id) {
     div = create_and_append("div", parent, id, "form-check form-switch")

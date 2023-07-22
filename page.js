@@ -10,7 +10,7 @@ const BARCHART_ICON = `
 function init_banner() {
     let stats_btn = create_and_append('div', document.getElementById("page_banner_left"), 'stats_btn', 'butn icon_btn')
     stats_btn.innerHTML = BARCHART_ICON
-    stats_btn.setAttribute('onclick', 'set_visibility("win_overlay", true)')      
+    stats_btn.setAttribute('onclick', 'set_visibility("stats_overlay", true)')      
 
     let settings_btn = create_and_append('div', document.getElementById("page_banner_right"), 'settings_btn', 'butn icon_btn')
     create_and_append("span", settings_btn, null, "glyphicon glyphicon-cog")
@@ -37,15 +37,15 @@ function init_settings_overlay() {
 
     let all_flags_mode_btn = create_and_append('button', gamemodes_buttons_div, 'all_flags_mode_btn', 'butn btn btn-secondary')
     all_flags_mode_btn.innerHTML = "All Flags"
-    all_flags_mode_btn.setAttribute('onclick', 'set_gamemode("all_flags")')
+    all_flags_mode_btn.setAttribute('onclick', 'set_gamemode("all_flags"); set_visibility("settings_overlay", false)')
 
     let fifteen_mode_btn = create_and_append('button', gamemodes_buttons_div, 'fifteen_mode_btn', 'butn btn btn-secondary')
     fifteen_mode_btn.innerHTML = "15 Flags"
-    fifteen_mode_btn.setAttribute('onclick', 'set_gamemode("fifteen")')
+    fifteen_mode_btn.setAttribute('onclick', 'set_gamemode("fifteen"); set_visibility("settings_overlay", false)')
 
-    let training_mode_btn = create_and_append('button', gamemodes_buttons_div, 'training_mode_btn', 'butn btn btn-secondary')
-    training_mode_btn.innerHTML = "Training"
-    training_mode_btn.setAttribute('onclick', 'set_gamemode("training")')
+    // let training_mode_btn = create_and_append('button', gamemodes_buttons_div, 'training_mode_btn', 'butn btn btn-secondary')
+    // training_mode_btn.innerHTML = "Training"
+    // training_mode_btn.setAttribute('onclick', 'set_gamemode("training")')
 
     // METRICS
     let metrics_title = create_and_append('h2', settings_overlay_content, 'metrics_title')
