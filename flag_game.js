@@ -352,7 +352,8 @@ function check_if_over() {
 
 function show_end_screen_overlay() {
     let overlay = create_and_append("div", document.body, "end_screen_overlay", "overlay")
-    overlay.style.display = "block"
+    overlay.style.display = "grid"
+    overlay.style["place-items"] = "center"
     add_close_button("end_screen_overlay")
 
     let end_screen_div = create_and_append("div", overlay, "end_screen_div")
@@ -363,6 +364,7 @@ function show_end_screen_overlay() {
     end_screen_text.innerHTML = `
     Score: ${get_score_str()} <br>
     Time: ${((Date.now() - start_time) / 1000).toFixed(2)}s <br>
+    Time per flag: ${((Date.now() - start_time) / 1000 / max_flags).toFixed(2)}s <br>
     `
 }
 

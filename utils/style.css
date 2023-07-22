@@ -246,9 +246,11 @@ body {
   z-index: 100;
 }
 
-.overlay-content {
+.overlay_content {
   display: grid;
   justify-items: center;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 #settings_overlay {
