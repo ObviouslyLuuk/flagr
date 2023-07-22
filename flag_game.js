@@ -17,14 +17,14 @@ var flag_mse_flips = null
 var flag_mse_rotations = null
 var flag_edges_mse = null
 METRICS = ["color", "mse", "mse_flips", "mse_rotations", "edges_mse"]
-METRIC_NAMES = ["Color Palette", "Per Pixel", "Flips", "Rotations", "Edges"]
+METRIC_NAMES = ["Color Palette", "Exact", "Flips", "Rotations", "Edges"]
 
 WEIGHT_PRESETS = {
-    "Balanced": [100, 8, 34, 0, 13], // Seems to be well balanced
-    "Color Emphasis": [100, 2, 2, 0, 10], // Emphasis on color (nice for aesthetics)
+    "balanced": [100, 8, 34, 0, 13], // Seems to be well balanced
+    "color": [100, 2, 2, 0, 10], // Emphasis on color (nice for aesthetics)
 }
 
-DEFAULT_WEIGHTS = WEIGHT_PRESETS["Balanced"]
+DEFAULT_WEIGHTS = WEIGHT_PRESETS["balanced"]
 
 EXAMPLE_COUNTRIES = ["Greece", "Bahamas", "Ireland", "Japan", "Denmark"] // Nice examples to show the different metrics
 
@@ -200,7 +200,7 @@ function init_flag_game() {
 
     // Get closest flags
     let [closest_indices, distances] = find_weighted_closest_n(
-        [flag_color_dist, flag_mse, flag_mse_flips, flag_mse_rotations, flag_edges_mse], idx, FLAG_COUNT - 1, DEFAULT_WEIGHTS)
+        [flag_color_dist, flag_mse, flag_mse_flips, flag_mse_rotations, flag_edges_mse], idx, FLAG_COUNT - 1, get_weights())
     let closest_flags = closest_indices.map(i => country_codes[i])
 
     let div = add_image_grid(document.body, FLAG_COUNT, id="flag_grid")
@@ -271,6 +271,42 @@ function init_flag_game() {
 
     shuffle_elements(div)
 }
+
+function get_weights() {
+    // If not init yet, return default weights
+    if (document.getElementById("similarity_div") == null)
+        return DEFAULT_WEIGHTS
+
+    let weights = []
+    for (let i = 0; i < 5; i++) {
+        let slider = document.getElementById(METRICS[i]+"_slider")
+        weights.push(slider.value)
+    }
+    return weights
+}
+
+/** Make all buttons in the preset group enabled */
+function enable_preset_buttons() {
+    let preset_buttons = document.getElementById("metrics_buttons_div").getElementsByTagName("button")
+    for (let button of preset_buttons) {
+        // Remove disabled from class list
+        button.classList.remove("disabled")
+    }
+}
+
+function set_metric_preset(preset) {
+    if (document.getElementById("similarity_div") == null)
+        init_flag_similarity()
+
+    for (let i in METRICS) {
+        let slider = document.getElementById(METRICS[i]+"_slider")
+        slider.value = WEIGHT_PRESETS[preset][i]
+    }
+    enable_preset_buttons()
+    // Disable the button that was clicked
+    let button = document.getElementById("metric_"+preset+"_btn")
+    button.classList.add("disabled")
+}    
 
 function add_to_recent_flags(code) {
     recent_flags.unshift(code)

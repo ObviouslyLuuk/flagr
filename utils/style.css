@@ -26,6 +26,13 @@ body {
 
 }
 
+/* General */
+.flex_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 /* UI */
 #page_banner_div {
   display: grid;

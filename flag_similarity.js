@@ -5,14 +5,17 @@ function remove_element(e) {
     e.parentNode.removeChild(e)
 }
 
-function init_flag_similarity() {
-    remove_element(document.getElementById("top_div"))
-    remove_element(document.getElementById("flag_grid"))
+function init_flag_similarity(parent=document.getElementById("settings_overlay_content"), weights=DEFAULT_WEIGHTS) {
+    // remove_element(document.getElementById("top_div"))
+    // remove_element(document.getElementById("flag_grid"))
+    // document.body.style.height = "auto"
 
-    document.body.style.height = "auto"
+    // Remove similarity metrics button
+    remove_element(document.getElementById("flag_similarity_btn"))
 
-    let sliders_div = create_and_append("div", document.body, "sim_sliders_div")
-    sliders_div.style.display = "flex"
+    let similarity_div = create_and_append("div", parent, "similarity_div")
+
+    let sliders_div = create_and_append("div", similarity_div, "sim_sliders_div", "flex_container")
 
     // Add slider for each metric in METRICS
     for (let i in METRICS) {
@@ -26,20 +29,22 @@ function init_flag_similarity() {
         // Add slider
         let slider = create_and_append("input", slider_div, METRICS[i]+"_slider")
         slider.type = "range"
-        slider.value = DEFAULT_WEIGHTS[i]
-        slider.oninput = sort_sim_lists
+        slider.value = weights[i]
+        slider.oninput = () => {sort_sim_lists(); enable_preset_buttons()}
     }
 
-    let sim_lists_div = create_and_append("div", document.body, "sim_lists_div")
+    let sim_lists_div = create_and_append("div", similarity_div, "sim_lists_div")
     // Make elements of sim_lists_div display inline
     sim_lists_div.style.display = "flex"
+    sim_lists_div.style["max-height"] = "50vh"
+    sim_lists_div.style["overflow-y"] = "scroll"
 
     // Add n sim_list_grids to sim_lists_div
     for (let i = 0; i < NUM_LISTS; i++) {
         let sim_list_grid = create_and_append("div", sim_lists_div, "sim_grid_"+i, "image_grid")
         // sim_list_grid.dataset.idx = Math.floor(Math.random() * country_codes.length)
         sim_list_grid.dataset.idx = countries.indexOf(EXAMPLE_COUNTRIES[i])
-        sim_list_grid.style["max-width"] = "10vw"
+        sim_list_grid.style["max-width"] = "20%"
 
         // Add countries.length img elements to sim_list_div
         for (let c of country_codes) {
@@ -62,7 +67,7 @@ function calc_dist_values(grid_num) {
         weights.push(document.getElementById(METRICS[i]+"_slider").value)
     }
 
-    console.log(weights)
+    // console.log(weights)
 
     // Set .dataset.dist for each img in sim_list_div
     let imgs = document.getElementById("sim_grid_"+grid_num).getElementsByTagName("img")
