@@ -30,7 +30,7 @@ function init_flag_similarity(parent=document.getElementById("settings_overlay_c
         let slider = create_and_append("input", slider_div, METRICS[i]+"_slider")
         slider.type = "range"
         slider.value = weights[i]
-        slider.oninput = () => {sort_sim_lists(); enable_preset_buttons()}
+        slider.oninput = () => {sort_sim_lists(); enable_buttons("metrics_buttons_div")}
     }
 
     let sim_lists_div = create_and_append("div", similarity_div, "sim_lists_div")

@@ -52,6 +52,7 @@ grid_configs = {
     7: "2x4",
     8: "2x4",
     9: "3x3",
+    16: "4x4",
 }
 
 
@@ -188,7 +189,7 @@ function save_stats(stats) {
     localStorage.setItem("flagr_stats", JSON.stringify(stats))
 }
 
-function init_flag_game(reset=false) {
+function init_flag_game(reset=false, flag=null) {
     if (code2country == null || flag_color_dist == null || flag_mse == null || flag_mse_flips == null || flag_mse_rotations == null || flag_edges_mse == null || gdp_probs == null)
         return
 
@@ -208,6 +209,7 @@ function init_flag_game(reset=false) {
         // If it doesn't exist, initialize the stats variable in local storage
         init_stats()
     }
+    already_guessed = false
 
     let top_div = create_and_append("div", document.body, "top_div")
     top_div.style.display = "grid"
@@ -251,8 +253,11 @@ function init_flag_game(reset=false) {
     }
 
     // Select country
-    already_guessed = false
-    correct_code = get_flag_fn()
+    if (flag == null) {
+        correct_code = get_flag_fn()
+    } else {
+        correct_code = country_codes[countries.indexOf(flag)]
+    }
     let idx = country_codes.indexOf(correct_code)
     add_to_recent_flags(correct_code)
     let country = code2country[correct_code]
