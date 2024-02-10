@@ -406,6 +406,8 @@ function check_answer(img) {
         stats["flag_stats"][correct_code]["total"] += 1
         stats["flag_stats"][correct_code]["correct"] += outcome
         save_stats(stats)
+
+        update_stats_overlay()
     }
     return outcome
 }
