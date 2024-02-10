@@ -527,15 +527,13 @@ function get_new_flag() {
     console.log("\nrecent success rate: ", success_rate)
     console.log("EMA: ", EMA)
 
-    // TODO: update std, update mean function because with EMA it doesn't reach 1
-    // let difficulty = success_to_difficulty(EMA)
-
-    let difficulty = success_to_difficulty(success_rate)
-    difficulty = difficulty*0.8 + 0.05
+    let difficulty = success_to_difficulty(EMA) // Add 0.01 because EMA can't reach 1
     console.log("difficulty: ", difficulty)
 
     let gaussian_mean = Math.round((difficulty) * country_codes.length)
+    let gaussian_std = difficulty**3 * 4 + 10
     console.log("gaussian_mean: ", gaussian_mean)
+    console.log("gaussian_std: ", gaussian_std)
 
     // Assign probabilities to each flag
     let probabilities = []
@@ -546,7 +544,7 @@ function get_new_flag() {
         let rank = country_codes.map(c => gdp_probs[c]).sort((a, b) => b - a).indexOf(gdp_probs[code])
 
         // Get corresponding probability for rank from gaussian
-        let gdp_prob = gaussian(rank, gaussian_mean, 10)
+        let gdp_prob = gaussian(rank, gaussian_mean, gaussian_std)
 
         let prob = get_recency_probability(code) * gdp_prob
 
@@ -584,12 +582,16 @@ function get_recency_probability(code) {
         return Math.min(unbounded, 1)
     }
 
-    unbounded = (idx/200)**2 // recover after 200 questions
+    unbounded = (idx/200)**4 // recover after 200 questions
     return Math.min(unbounded, 1)
 }
 
 function success_to_difficulty(success_rate) {
-    return 1 - (1-success_rate)**0.2
+    let boundary = 0.7
+    let success_above_norm = Math.max(success_rate - boundary, 0) * (1/(1-boundary))
+    let difficulty = 1 - (1-success_above_norm)**0.2
+    // difficulty = difficulty*0.8 + 0.05
+    return difficulty
 }
 
 

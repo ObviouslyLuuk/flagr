@@ -311,9 +311,6 @@ function get_new_flag() {
     console.log("\nrecent success rate: ", success_rate)
     console.log("EMA: ", EMA)
 
-    // TODO: update std, update mean function because with EMA it doesn't reach 1
-    // let difficulty = success_to_difficulty(EMA)
-
     let difficulty = success_to_difficulty(success_rate)
     difficulty = difficulty*0.8 + 0.05
     console.log("difficulty: ", difficulty)
@@ -393,6 +390,7 @@ function add_image_grid(parent, id="flag_grid") {
     let overlay = create_and_append("div", img_container, null, "country_name_overlay")
     overlay.style["font-size"] = "5em"
     overlay.style["font-weight"] = "bold"
+    overlay.style["pointer-events"] = "none"
     overlay.innerHTML = "?"
 
     let img = create_and_append("img", img_container, null, "flag")
