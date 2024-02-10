@@ -46,10 +46,26 @@
 
   <script src="utils/html_utils.js", type="text/javascript"></script>
   <script src="page.js", type="text/javascript"></script>
-  <script src="flag_game.js", type="text/javascript"></script>
-  <script src="flag_similarity.js", type="text/javascript"></script>
+  <!-- <script src="flag_game.js", type="text/javascript"></script> -->
+  <!-- <script src="flag_imagine.js", type="text/javascript"></script>
+  <script src="flag_similarity.js", type="text/javascript"></script> -->
 
   <script type = "text/javascript">
+
+    function loadScript(url) {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = url;
+      document.head.appendChild(script);
+    }
+
+    // Add flag_game.js and flag_similarity.js to html if at / but if at /?draw then load flag_imagine.js
+    if (window.location.search == "") {
+      loadScript("flag_game.js");
+      loadScript("flag_similarity.js");
+    } else if (window.location.search == "?draw") {
+      loadScript("flag_imagine.js");
+    }
 
     // https://stackoverflow.com/questions/11381673/detecting-a-mobile-browser
     window.mobileCheck = function() {

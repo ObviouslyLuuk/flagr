@@ -113,6 +113,7 @@ body {
   transform:translate(-50%, -50%);
   font-size:18px;
   text-align:center;
+  z-index: 1;
 }
 
 /* BUTTONS */
