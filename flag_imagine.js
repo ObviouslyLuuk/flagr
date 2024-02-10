@@ -28,7 +28,7 @@ var countries = []
 var recent_flags = []
 var recently_correct = []
 var recent_outcomes = []
-var EMA = 0.5 // Exponential moving average of recent_outcomes
+var EMA = 0 // Exponential moving average of recent_outcomes
 EMA_ALPHA = 0.3 // Smoothing factor for EMA
 
 // Game mode variables
@@ -307,7 +307,7 @@ function get_new_flag() {
     let success_rate = mean(recent_outcomes.slice(0, 10))
     // If no outcomes yet, set to 0.5
     if (recent_outcomes.length < 5)
-        success_rate = 0.5
+        success_rate = 0
     console.log("\nrecent success rate: ", success_rate)
     console.log("EMA: ", EMA)
 
