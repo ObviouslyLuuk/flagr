@@ -403,8 +403,8 @@ function check_answer(img) {
         EMA = outcome*EMA_ALPHA + EMA*(1-EMA_ALPHA)
 
         let stats = get_stats()
-        stats["flag_stats"][img.dataset.code]["total"] += 1
-        stats["flag_stats"][img.dataset.code]["correct"] += outcome
+        stats["flag_stats"][correct_code]["total"] += 1
+        stats["flag_stats"][correct_code]["correct"] += outcome
         save_stats(stats)
     }
     return outcome
