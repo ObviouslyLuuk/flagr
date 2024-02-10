@@ -1,3 +1,6 @@
+///////////////////////////////////////////////////////////////////////////////
+// Flag similarity settings and demo
+///////////////////////////////////////////////////////////////////////////////
 
 NUM_LISTS = 5
 
@@ -5,6 +8,7 @@ function remove_element(e) {
     e.parentNode.removeChild(e)
 }
 
+/** Initialize flag similarity settings and demo */
 function init_flag_similarity(parent=document.getElementById("settings_overlay_content"), weights=DEFAULT_WEIGHTS) {
     // remove_element(document.getElementById("top_div"))
     // remove_element(document.getElementById("flag_grid"))
@@ -61,6 +65,7 @@ function init_flag_similarity(parent=document.getElementById("settings_overlay_c
     }
 }
 
+/** Calculate distance values for each img in sim_list_div */
 function calc_dist_values(grid_num) {
     let weights = []
     for (let i in METRICS) {
@@ -86,6 +91,7 @@ function calc_dist_values(grid_num) {
     }
 }
 
+/** Sort sim_list based on distance values */
 function sort_sim_list(grid_num) {
     calc_dist_values(grid_num)
 
@@ -93,6 +99,7 @@ function sort_sim_list(grid_num) {
     sort_elements(grid, (e) => parseFloat(e.dataset.dist))
 }
 
+/** Sort all sim_lists */
 function sort_sim_lists() {
     for (let i = 0; i < NUM_LISTS; i++) {
         sort_sim_list(i)

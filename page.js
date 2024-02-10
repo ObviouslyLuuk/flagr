@@ -57,11 +57,11 @@ function init_settings_overlay() {
 
     let balanced_btn = create_and_append('button', metrics_buttons_div, 'metric_balanced_btn', 'butn btn btn-secondary disabled')
     balanced_btn.innerHTML = "Balanced"
-    balanced_btn.setAttribute('onclick', 'set_metric_preset("balanced")')
+    balanced_btn.setAttribute('onclick', 'set_metric_preset("balanced"); sort_sim_lists();')
 
     let color_btn = create_and_append('button', metrics_buttons_div, 'metric_color_btn', 'butn btn btn-secondary')
     color_btn.innerHTML = "Color"
-    color_btn.setAttribute('onclick', 'set_metric_preset("color")')
+    color_btn.setAttribute('onclick', 'set_metric_preset("color"); sort_sim_lists();')
 
     let flag_similarity_btn = create_and_append('button', metrics_buttons_div, 'flag_similarity_btn', 'butn btn btn-secondary')
     flag_similarity_btn.innerHTML = "Customize Metrics"
@@ -183,11 +183,11 @@ function update_stats_overlay() {
     for (let flag_count of Object.keys(record_times)) {
         let best = get_best_time(record_times[flag_count])
 
-        let record_times_table_body_row = create_and_append('tr', record_times_table_body, 'record_times_table_body_row')
-        let record_times_table_body_name = create_and_append('td', record_times_table_body_row, 'record_times_table_body_name')
+        let record_times_table_body_row = create_and_append('tr', record_times_table_body, 'record_times_table_body_row_' + flag_count)
+        let record_times_table_body_name = create_and_append('td', record_times_table_body_row, 'record_times_table_body_name_' + flag_count)
         record_times_table_body_name.innerHTML = flag_count
-        let record_times_table_body_score = create_and_append('td', record_times_table_body_row, 'record_times_table_body_score')
-        let record_times_table_body_time = create_and_append('td', record_times_table_body_row, 'record_times_table_body_time')
+        let record_times_table_body_score = create_and_append('td', record_times_table_body_row, 'record_times_table_body_score_' + flag_count)
+        let record_times_table_body_time = create_and_append('td', record_times_table_body_row, 'record_times_table_body_time_' + flag_count)
         record_times_table_body_score.innerHTML = (best.score / flag_count * 100) + "%"
         record_times_table_body_time.innerHTML = best.time
     }
@@ -203,19 +203,19 @@ function update_stats_overlay() {
         let total = stat.total
         let correct = stat.correct
 
-        let flag_scores_table_body_row = create_and_append('tr', flag_scores_table_body, 'flag_scores_table_body_row')
-        let flag_scores_table_body_flag = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_flag')
+        let flag_scores_table_body_row = create_and_append('tr', flag_scores_table_body, 'flag_scores_table_body_row_' + code)
+        let flag_scores_table_body_flag = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_flag_' + code)
         // Place a small image of the flag
-        let flag_img = create_and_append('img', flag_scores_table_body_flag, 'flag_img')
+        let flag_img = create_and_append('img', flag_scores_table_body_flag, 'stats_flag_img_' + code)
         flag_img.src = get_flag_src(code)
         flag_img.height = 20
-        let flag_scores_table_body_name = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_name')
+        let flag_scores_table_body_name = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_name_' + code)
         flag_scores_table_body_name.innerHTML = code2country[code]
-        let flag_scores_table_body_total = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_total')
+        let flag_scores_table_body_total = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_total_' + code)
         flag_scores_table_body_total.innerHTML = total
-        let flag_scores_table_body_score = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_score')
+        let flag_scores_table_body_score = create_and_append('td', flag_scores_table_body_row, 'flag_scores_table_body_score_' + code)
         if (total)
-            flag_scores_table_body_score.innerHTML = (correct / total * 100) + "%"
+            flag_scores_table_body_score.innerHTML = (correct / total * 100).toFixed(1) + "%"
     }
     sort_table("flag_scores_table", 2, (str)=>{return Number(str)} )
 }
